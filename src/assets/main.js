@@ -15,7 +15,7 @@ function guess() {
     attempt.value ++;
 
     if(getResults(input)) {
-        setMessage("You Win! :)");
+        setMessage('You Win! :)');
         showAnswer(true);
         showReplay();
     } else {
