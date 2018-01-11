@@ -3,9 +3,31 @@ let attempt = document.getElementById('attempt');
 
 function guess() {
     let input = document.getElementById('user-guess');
-    //add functionality to guess function here
-}
 
+    if (answer == '' && attempt == '') {
+      setHiddenFields();
+    }
+
+    if (!validateInput(input.value)) {
+        return;
+    }
+
+    attempt.value ++;
+
+    if(getResults(input)) {
+        setMessage("You Win! :)");
+        showAnswer(true);
+        showReplay();
+    } else {
+        if (attempt >= 10){
+          setMessage("You lose :(");
+          showAnswer(true);
+          showReplay();
+        } else {
+          setMessage("Incorrect, try again.");
+        }
+    }
+}
 
 
 function setHiddenFields() {
@@ -16,4 +38,57 @@ function setHiddenFields() {
   }
 
   attempt.value = 0;
+}
+
+function setMessage(label) {
+  document.getElementById('message').innerHTML = label;
+}
+
+function validateInput(input) {
+  if (input.length != 4) {
+    setMessage("Guesses must be exactly 4 characters long.");
+    return false;
+  }
+
+  return true;
+}
+
+function getResults(input) {
+  let html = '<div class="row"><span class="col-md-6">' + input + '</span><span class="col-md-6">';
+  var guessCount = 0
+  for(i=0; i< input.length; i++) {
+    if(input.charAt(i) == answer.value.charAt(i)) {
+      html += '<span class="glyphicon glyphicon-ok"></span>';
+    } else if (answer.value.indexOf(input.charAt(i) > -1)) {
+        html += '<span class="glyphicon glyphicon-transfer"></span>';
+    } else{
+        html += '<span class="glyphicon glyphicon-remove"></span>';
+    }
+  }
+
+  html += '</div></div>';
+  document.getElementById('results').innerHTML += html;
+
+  if (input == answer.value) {
+    return true;
+  }
+
+  return false;
+}
+
+function showAnswer(success) {
+  let codeLabel = document.getElementById('code');
+
+  if (success) {
+    codeLabel.className += ' success';
+  } else {
+    codeLabel.className += ' failure';
+  }
+
+  codeLabel.innerHTML = answer.value;
+}
+
+function showReplay() {
+  document.getElementById('guessing-div').style.display = "none";
+  document.getElementById('replay-div').style.display = 'block';
 }
