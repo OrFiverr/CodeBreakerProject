@@ -4,28 +4,26 @@ let attempt = document.getElementById('attempt');
 function guess() {
     let input = document.getElementById('user-guess');
 
-    if (answer == '' && attempt == '') {
+    if (answer.value == '' || attempt.value == '') {
       setHiddenFields();
     }
 
-    if (!validateInput(input.value)) {
+    if(!validateInput(input.value)){
         return;
+    } else {
+        attempt.value++;
     }
-
-    attempt.value ++;
 
     if(getResults(input)) {
         setMessage('You Win! :)');
         showAnswer(true);
         showReplay();
+    } else if (attempt >= 10) {
+        setMessage("You lose :(");
+        showAnswer(true);
+        showReplay();
     } else {
-        if (attempt >= 10){
-          setMessage("You lose :(");
-          showAnswer(true);
-          showReplay();
-        } else {
-          setMessage("Incorrect, try again.");
-        }
+        setMessage("Incorrect, try again.");
     }
 }
 
@@ -55,10 +53,12 @@ function validateInput(input) {
 
 function getResults(input) {
   let html = '<div class="row"><span class="col-md-6">' + input + '</span><span class="col-md-6">';
-  var guessCount = 0
+  let correct = 0;
+
   for(i=0; i< input.length; i++) {
     if(input.charAt(i) == answer.value.charAt(i)) {
       html += '<span class="glyphicon glyphicon-ok"></span>';
+      correct++;
     } else if (answer.value.indexOf(input.charAt(i) > -1)) {
         html += '<span class="glyphicon glyphicon-transfer"></span>';
     } else{
@@ -67,13 +67,14 @@ function getResults(input) {
   }
 
   html += '</div></div>';
+
   document.getElementById('results').innerHTML += html;
 
-  if (input == answer.value) {
+  if(correct == input.length) {
     return true;
+  } else {
+    return false;
   }
-
-  return false;
 }
 
 function showAnswer(success) {
@@ -90,5 +91,5 @@ function showAnswer(success) {
 
 function showReplay() {
   document.getElementById('guessing-div').style.display = "none";
-  document.getElementById('replay-div').style.display = 'block';
+  document.getElementById('replay-div').style.display = "block";
 }
